@@ -1,6 +1,7 @@
 package servlet;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -8,6 +9,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import model.dao.ReadingRecordsDAO;
+import model.entity.ReadBooksBean;
 
 /**
  * Servlet implementation class RRecordListServlet
@@ -30,17 +35,14 @@ public class RRecordListServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
 			throws ServletException, IOException {
-		
-		//ユーザIDを取得
-		int id = Integer.parseInt(request.getParameter("userId"));
-		
-//		System.out.println(id);
-				
-		// まだこれから！！！
-//		// セッションスコープ呼び出し
-//		HttpSession session = request.getSession();
-//		session = request.getSession();
-		
+		// セッションスコープからユーザーIDを取得
+		HttpSession session = request.getSession();
+		int userId = (int) session.getAttribute("userId");
+		System.out.println("セッションスコープから："+userId);
+		// 読書記録リストを取得し、セッションスコープに保存
+		ReadingRecordsDAO rrd = new ReadingRecordsDAO();
+		List<ReadBooksBean> rRecordList = rrd.selectAllRecords(userId);
+		session.setAttribute("rRecordList", rRecordList);
 		// フォワード
 		RequestDispatcher dispatcher = 
 				request.getRequestDispatcher("/WEB-INF/jsp/r-record-list.jsp");
@@ -50,9 +52,12 @@ public class RRecordListServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+			throws ServletException, IOException {
+		// フォワード
+		RequestDispatcher dispatcher = 
+				request.getRequestDispatcher("/WEB-INF/jsp/main-menu.jsp");
+		dispatcher.forward(request, response);
 	}
 
 }

@@ -63,21 +63,22 @@ public class ReadingBooksDAO {
 			CategoryImage img = new CategoryImage();
 			String path = img.CategoryImage(bookCategory);
 			
-			ReadBooksBean readBooks = new ReadBooksBean();
-			readBooks.setImagePath(path);
-			readBooks.setBookId(bookId);
-			readBooks.setBookCategory(bookCategory);
-			readBooks.setBookName(bookName);
-			readBooks.setTotalPages(totalPages);
-			readBooks.setReadPages(readPages);
-			readBooks.setPercentage(percentage);
+			ReadBooksBean rbb = new ReadBooksBean();
+			rbb.setImagePath(path);
+			rbb.setBookId(bookId);
+			rbb.setBookCategory(bookCategory);
+			rbb.setBookName(bookName);
+			rbb.setTotalPages(totalPages);
+			rbb.setReadPages(readPages);
+			rbb.setPercentage(percentage);
 			
-			bookList.add(readBooks);
+			bookList.add(rbb);
 		}
 		
 	} catch (ClassNotFoundException | SQLException e) {
 		
 		e.printStackTrace();
+		System.out.println("エラーが発生しました");
 		return null;
 	}
 	
@@ -129,37 +130,68 @@ public class ReadingBooksDAO {
 		
 	}
 	
+	public void addBook(ReadBooksBean rbb) {
+		// データベースへ接続
+		try(Connection conn =ConnectionManager.getConnection()){
+			// SELECT文を準備
+			String sql = "INSERT INTO reading_books.m_book "
+					+"(book_name, purchase_date, user_id, book_category, total_pages, book_memos) "
+					+"VALUES(?,?,?,?,?,?)";
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, rbb.getBookName());
+			pstmt.setDate(2, (java.sql.Date) rbb.getPurchaseDate());
+			pstmt.setInt(3, rbb.getUserId());
+			pstmt.setString(4, rbb.getBookCategory());
+			pstmt.setInt(5, rbb.getTotalPages());
+			pstmt.setString(6, rbb.getBookmemos());
+//			System.out.println("DAO内のユーザID："+ rbb.getUserId());
+//			System.out.println(rbb.getBookName());
+//			System.out.println(rbb.getBookCategory());
+			// SELECTを実行
+			int ud = pstmt.executeUpdate();
+			
+		} catch (ClassNotFoundException | SQLException e) {
+			System.out.println("エラーが発生しました");
+			e.printStackTrace();
+		}
+	}
+	
 	/**
-	 * ユーザのすべての読書記録をリストにして返します
-	 * @param useId
-	 * @return List
+	 * 本の情報を更新します
+	 * @param rbb
 	 */
-//	public List<ReadBooksBean> selectAllRecords(int useId){
-//		
-//		List<ReadBooksBean> List = new ArrayList<ReadBooksBean>();
-//		// データベースへ接続
-//		try(Connection conn =ConnectionManager.getConnection()){
-//			
-//			// SELECT文を準備
-//			String sql = "SELECT * FROM reading_books.m_read_pages WHERE user_id = ?";
-//			PreparedStatement pstmt = conn.prepareStatement(sql);
-//			pstmt.setInt(1, useId);
+	public void updateBook(ReadBooksBean rbb) {
+		// データベースへ接続
+		try(Connection conn =ConnectionManager.getConnection()){
+			// SELECT文を準備
+			String sql = "UPDATE reading_books.m_book "
+			+"SET book_name = ?, "
+					+"purchase_date = ?, "
+					+"book_category = ?, "
+					+"total_pages = ?, "
+					+"book_memos = ? "
+			+"WHERE book_id = ?";
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, rbb.getBookName());
+			pstmt.setDate(2, (java.sql.Date) rbb.getPurchaseDate());
+			pstmt.setString(3, rbb.getBookCategory());
+			pstmt.setInt(4, rbb.getTotalPages());
+			pstmt.setString(5, rbb.getBookmemos());
+			pstmt.setInt(6, rbb.getBookId());
 			
-//			// SELECTを実行、結果ををリストに格納
-//			ここから下は未完成！！！！！！
-//			ResultSet rs = pstmt.executeQuery();
-//			while(rs.next()) {
-//				String bookName = rs.getString("book_name");
-//				Date purchaseDate = rs.getDate("purchase_date");
-//				int totalPages = rs.getInt("total_pages");
-//				int readPages = rs.getInt("read_pages_sum");
-//			}
 			
-//		} catch (ClassNotFoundException | SQLException e) {
-//			// TODO 自動生成された catch ブロック
-//			e.printStackTrace();
-//		}
-//		return null;
-//		
-//	}
+			System.out.println("DAO内のユーザID："+ rbb.getUserId());
+			System.out.println(rbb.getBookName());
+			System.out.println(rbb.getBookCategory());
+			System.out.println(rbb.getTotalPages());
+			System.out.println(rbb.getBookmemos());
+			System.out.println(rbb.getBookId());
+			// SELECTを実行
+			int ud = pstmt.executeUpdate();
+			
+		} catch (ClassNotFoundException | SQLException e) {
+			System.out.println("エラーが発生しました");
+			e.printStackTrace();
+		}
+	}
 }

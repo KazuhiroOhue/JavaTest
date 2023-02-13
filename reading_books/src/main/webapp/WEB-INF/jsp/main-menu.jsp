@@ -15,8 +15,8 @@
 		<c:out value="${msg}" />
 	</p>
 	<h2>メインメニュー</h2>
-	<form action="Create" method="GET">
-		<input type="submit" name="action" value="新しい本の登録（まだ！！）">
+	<form action="AddBookInfo" method="GET">
+		<input type="submit" name="action" value="新しい本の登録">
 	</form>
 	<form action="Create" method="GET">
 		<input type="submit" name="action" value="説明画面（まだ！！）">
@@ -32,7 +32,7 @@
 					type="submit" value="読書記録一覧へ">
 			</form>
 			<table border="1">
-				<caption>メモ一覧</caption>
+				<caption>本棚の中</caption>
 				<tr>
 					<th></th>
 					<th>タイトル</th>

@@ -38,12 +38,10 @@ public class MainMenuServlet extends HttpServlet {
 		// セッションスコープからユーザーIDを取得
 		HttpSession session = request.getSession();
 		int userId = (int) session.getAttribute("userId");
-		
 		// ユーザの本リストを取得して、セッションスコープに保存
 		ReadingBooksDAO rb = new ReadingBooksDAO();
 		List<ReadBooksBean> bookList = rb.selectAllBooks(userId);
 		session.setAttribute("bookList", bookList);
-		
 		// フォワード
 		RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/main-menu.jsp");
 		rd.forward(request, response);

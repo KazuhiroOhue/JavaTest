@@ -54,44 +54,43 @@ public class LoginServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) 
 		throws ServletException, IOException {
-	
 		// リクエストパラメータの取得
 		request.setCharacterEncoding("UTF-8");
 		String userName = request.getParameter("userName");
 		String password = request.getParameter("password");
-		
-		//アカウントが存在するか確認
+		// 登録済みのアカウントであるか確認
 		Login login = new Login(userName, password);
 		AccountDAO AD = new AccountDAO();
 		Login result = AD.execute(login);
 		int resultId = result.getUserId();
 		String resultName = result.getUserName();
-		
 		// アカウントが存在するかどうかで処理を分岐
+		/**
+		 * 登録済みであれば、
+		 * メイン画面に移動します。
+		 */
 		if (resultName != null) {
 			// セッションスコープにユーザーIDを保存
 			HttpSession session = request.getSession();
 			session.setAttribute("userId", resultId);
 			session.setAttribute("userName", resultName);
-			
 			// ログインメッセージの作成
 			StringBuilder sb = new StringBuilder();
 			sb.append(result.getUserName());
 			sb.append("さん、おかえりなさい");
 			String msg = sb.toString();
 			request.setAttribute("msg", msg);
-			
 			// ユーザの本リストを取得して、セッションスコープに保存
 			ReadingBooksDAO rb = new ReadingBooksDAO();
 			List<ReadBooksBean> bookList = rb.selectAllBooks(resultId);
 			session.setAttribute("bookList", bookList);
-			
 			// フォワード
 			RequestDispatcher dispatcher = 
 					request.getRequestDispatcher("/WEB-INF/jsp/main-menu.jsp");
 			dispatcher.forward(request, response);
-			
-		} else { // ログイン失敗時
+		
+		// アカウントがなければ、ログイン画面にフォワードします。
+		} else {
 			String msg = "ログインに失敗しました！！";
 			request.setAttribute("error_msg", msg);
 			RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/jsp/login.jsp");

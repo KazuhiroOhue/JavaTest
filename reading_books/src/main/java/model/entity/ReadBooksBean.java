@@ -13,6 +13,10 @@ public class ReadBooksBean implements Serializable {
 	 */
 	private String bookName;
 	/**
+	 * ユーザID
+	 */
+	private int userId;
+	/**
 	 * 本の画像パス
 	 */
 	private String imagePath;
@@ -32,6 +36,18 @@ public class ReadBooksBean implements Serializable {
 	 * 本のメモ
 	 */
 	private String bookmemos;
+	public int getReadingId() {
+		return readingId;
+	}
+
+	public void setReadingId(int readingId) {
+		this.readingId = readingId;
+	}
+
+	/**
+	 * 読書記録ID
+	 */
+	private int readingId;
 	/**
 	 * 読書した日
 	 */
@@ -59,6 +75,14 @@ public class ReadBooksBean implements Serializable {
 
 	public void setBookId(int bookId) {
 		this.bookId = bookId;
+	}
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
 	}
 
 	public String getBookName() {
